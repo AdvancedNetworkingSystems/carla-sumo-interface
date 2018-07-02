@@ -16,7 +16,7 @@ from carla.settings import CarlaSettings
 from carla.tcp import TCPConnectionError
 from carla.util import print_over_same_line
 
-# Plexe dependencies
+# SUMO dependencies
 import os
 import random
 import sys
@@ -169,11 +169,10 @@ def add_vehicle(vid, length, width, position, lane, speed, vtype="vtypeauto"):
 def getAdjustedPosition(position, params, car_dimen):
     yaw = position.rotation_yaw + params.angle_correction
     radians = yaw / 180 * math.pi
-    pos_x = params.x_multiplier * position.location_x + params.x_correction + \
-        math.sin(
-            radians)*car_dimen  # in Carla the agent's position is the center of the car
-    pos_y = params.y_multiplier * position.location_y + params.y_correction + \
-        math.cos(radians)*car_dimen  # in Sumo it's the front bumper
+    # in Carla the agent's position is the center of the car,
+    # while in Sumo it's the front bumper. The last element of the addition is to correct this difference.
+    pos_x = params.x_multiplier * position.location_x + params.x_correction + math.sin(radians)*car_dimen
+    pos_y = params.y_multiplier * position.location_y + params.y_correction + math.cos(radians)*car_dimen
     return Position(pos_x, pos_y, yaw)
 
 
